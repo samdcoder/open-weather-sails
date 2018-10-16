@@ -1,39 +1,54 @@
-<h3 class='text-primary'><center> Historical Weather Data  <h3 class='text-danger'> <%= city_name %></h3> </center> </h3>
+<h3 class='text-primary'><center> Future Weather Data  <h3 class='text-danger'> <%=city_name %></h3> </center> </h3>
 
-<table class="table" id="myTable">
-<thead class='thead-dark'>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">Temperature</th>
-      <th scope="col">Pressure</th>
-      <th scope="col">Humidity</th>
-    </tr>
-  </thead>
-<tbody>
-<% data.forEach(function(d){ %>
-	<tr>
-	<% var unix_timestamp = d.dt; %>
-	<% var date = new Date(unix_timestamp*1000); %>
-	<% var hours = date.getHours(); %>
-	<% var minutes = "0" + date.getMinutes(); %>
-	<% var seconds = "0" + date.getSeconds(); %>
-	<% var year = date.getFullYear(); %>
-	<% var month = date.getMonth() + 1; %>
-	<% var my_date = date.getDate(); %>
-	<% var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);%>
-	
-	<th scope="row"><%= my_date + "-" + month + "-" + year + " " + formattedTime %></th>
-	<td> <%= d.main.temp %> </td>
-	<td> <%= d.main.pressure %> </td>
-	<td> <%= d.main.humidity %> </td>
-	</tr>
-<% }) %>
+<%- include functions %> 
 
-</tbody>
+<table class = "table" id="testTable">
 </table>
-
 <script type="text/javascript">
-          $(document).ready( function () {
-               $('#myTable').DataTable();
-        } );
+    $(document).ready( function () {
+    var newJson = "" 
+	    <% data.forEach(function(d){ %>
+		<% var unix_timestamp = d.dt; %>
+		<% var date = new Date(unix_timestamp*1000); %>
+		<% var hours = date.getHours(); %>
+		<% var minutes = "0" + date.getMinutes(); %>
+		<% var seconds = "0" + date.getSeconds(); %>
+		<% var year = date.getFullYear(); %>
+		<% var month = date.getMonth() + 1; %>
+		<% var my_date = date.getDate(); %>
+		<% var formattedTime = hours + '-' + minutes.substr(-2) + '-' + seconds.substr(-2);%>
+		<% var final_date = my_date + "-" + month + "-" + year + " " + formattedTime %>
+		<% final_date = final_date.toString(); %>
+		
+		var temperature = <%= d.main.temp%> 
+		var pressure = <%= d.main.pressure %> 
+		var humidity = <%= d.main.humidity %>
+	 	var date = "<%= final_date %>";
+	 	temperature = temperature.toString();
+	 	humidity = humidity.toString();
+	 	pressure = pressure.toString();
+	 	
+	 	newJson = newJson + "{"; 
+	 	newJson = newJson + "\"date\"" + ":" + "\"" + date + "\"" + ","
+	 	newJson = newJson + "\"temperature\"" + ":" + temperature + ","
+	 	newJson = newJson + "\"pressure\"" + ":" + pressure + ","
+	 	newJson = newJson + "\"humidity\"" + ":" + humidity + " },"
+
+	<% }) %>	
+	newJson = "[" + newJson.slice(0, newJson.length - 1) + "]" 
+    newJson = JSON.parse(newJson)
+    $("#testTable").append("<thead class='thead-dark'><tr><th>Date</th> <th> Temperature</th> <th> Pressure </th> <th> Humidity </th> </thead></table>");
+	$('#testTable').DataTable({
+	data: newJson,
+	columns: [
+		{ data: 'date' },
+		{ data: 'temperature' },
+		{ data: 'pressure' },
+		{ data: 'humidity' },
+	],
+		"pageLength": 10
+		});
+    } );
+
+    
 </script>
