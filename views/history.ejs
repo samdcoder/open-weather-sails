@@ -1,0 +1,39 @@
+<h3 class='text-primary'><center> Historical Weather Data  <h3 class='text-danger'> <%= city_name %></h3> </center> </h3>
+
+<table class="table" id="myTable">
+<thead class='thead-dark'>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Temperature</th>
+      <th scope="col">Pressure</th>
+      <th scope="col">Humidity</th>
+    </tr>
+  </thead>
+<tbody>
+<% data.forEach(function(d){ %>
+	<tr>
+	<% var unix_timestamp = d.dt; %>
+	<% var date = new Date(unix_timestamp*1000); %>
+	<% var hours = date.getHours(); %>
+	<% var minutes = "0" + date.getMinutes(); %>
+	<% var seconds = "0" + date.getSeconds(); %>
+	<% var year = date.getFullYear(); %>
+	<% var month = date.getMonth() + 1; %>
+	<% var my_date = date.getDate(); %>
+	<% var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);%>
+	
+	<th scope="row"><%= my_date + "-" + month + "-" + year + " " + formattedTime %></th>
+	<td> <%= d.main.temp %> </td>
+	<td> <%= d.main.pressure %> </td>
+	<td> <%= d.main.humidity %> </td>
+	</tr>
+<% }) %>
+
+</tbody>
+</table>
+
+<script type="text/javascript">
+          $(document).ready( function () {
+               $('#myTable').DataTable();
+        } );
+</script>

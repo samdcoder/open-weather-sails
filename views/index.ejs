@@ -1,0 +1,48 @@
+<center><h1 class='text-primary'> Weather History App </h1></center>
+<br><br>
+
+<div align="center">
+	<h3> <center> Enter the City </center> </h3><br>
+	<input type="text" id="city" style="width:300px">
+	<br><br>
+	<button class='btn btn-primary' id="cityButton"> Find </button>
+<div>
+
+<div id="result" style="padding-top: 50px">
+	<div id="humidity"></div> <br>
+	<div id="temperature"> </div>
+	<div id="sun"> </div>
+	<div id="error"> </div> <br>
+	<div id="history_link"> </div>
+</div>
+
+
+<script>
+
+	function clearData(){
+		document.getElementById('error').innerHTML = '';
+  		document.getElementById('humidity')	.innerHTML = '';
+  		document.getElementById('temperature').innerHTML = '';
+  		document.getElementById('history_link').innerHTML = '';
+
+	}
+	  $('#cityButton').click(function (e) {
+	  const city = document.getElementById("city").value; 
+      axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city} &APPID=dc525dad10f9e7cdd65f4f2fb65edfa2`)
+  	.then(response => {
+  			clearData();
+  			console.log("response = ", response);
+  			const city_id = response["data"]["id"];
+  			document.getElementById('humidity').innerHTML = 'Humidity: ' + response["data"]["main"]["humidity"];
+  			document.getElementById('temperature').innerHTML = 'Temperature: ' + response["data"]["main"]["temp"];
+  			//insert link in the DOM
+  			document.getElementById('history_link').innerHTML = `<a href="/city/history/${city_id}"> View History </a>`; 
+  	})
+  	.catch(error => {
+  		 clearData();
+  		 console.log('Error fetching and parsing data', error);
+   		 document.getElementById('error').innerHTML = '<h2 style="color: Red"> Error in fetching the data </h2> '
+  	});
+  });	
+
+</script>
